@@ -13,4 +13,8 @@ public class GolfCourseService {
         return kakaoMapClient.searchGolfCourses(lat, lng, radius);
     }
 
+    public String findLocalGolfCourses(String local) {
+        return kakaoMapClient.searchGolfCoursesByLocal(local);
+    }
+
 }

@@ -16,7 +16,6 @@ public class KakaoMapClient {
         .build();
 
     public String searchGolfCourses(double lat, double lng, int radius) {
-        System.out.println("Kakao APIP Key: " + apiKey);
         return webClient.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/v2/local/search/keyword.json")
@@ -24,6 +23,19 @@ public class KakaoMapClient {
                 .queryParam("x", lng)
                 .queryParam("y", lat)
                 .queryParam("radius", radius)
+                .queryParam("size", 15)
+                .build())
+            .header("Authorization", "KakaoAK " + apiKey)
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+    }
+
+    public String searchGolfCoursesByLocal(String localName) {
+        return webClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .path("/v2/local/search/keyword.json")
+                .queryParam("query", localName + "골프장")
                 .queryParam("size", 15)
                 .build())
             .header("Authorization", "KakaoAK " + apiKey)

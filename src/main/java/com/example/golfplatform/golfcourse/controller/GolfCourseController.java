@@ -19,4 +19,9 @@ public class GolfCourseController {
         return golfCourseService.findNearbyGolfCourses(lat, lng, radius);
     }
 
+    @GetMapping("/local")
+    public String getLocalGolfCourse(@RequestParam String local) {
+        return getLocalGolfCourse(local);
+    }
+
 }
