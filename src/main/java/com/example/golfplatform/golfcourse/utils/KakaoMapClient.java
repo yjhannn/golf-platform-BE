@@ -1,5 +1,6 @@
 package com.example.golfplatform.golfcourse.utils;
 
+import com.example.golfplatform.golfcourse.request.KakaoLocalRequest;
 import com.example.golfplatform.golfcourse.request.KakaoPositionRequest;
 import com.example.golfplatform.golfcourse.response.KakaoApiResponse;
 import com.example.golfplatform.golfcourse.response.KakaoPositionResponse;
@@ -34,16 +35,16 @@ public class KakaoMapClient {
             .block();
     }
 
-    public String searchGolfCoursesByLocal(String localName) {
+    public KakaoApiResponse searchGolfCoursesByLocal(KakaoLocalRequest request) {
         return webClient.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/v2/local/search/keyword.json")
-                .queryParam("query", localName + "골프장")
+                .queryParam("query", request.Local() + "골프장")
                 .queryParam("size", 15)
                 .build())
             .header("Authorization", "KakaoAK " + apiKey)
             .retrieve()
-            .bodyToMono(String.class)
+            .bodyToMono(KakaoApiResponse.class)
             .block();
     }
 
