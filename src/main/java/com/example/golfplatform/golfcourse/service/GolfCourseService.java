@@ -1,7 +1,9 @@
 package com.example.golfplatform.golfcourse.service;
 
+import com.example.golfplatform.golfcourse.request.KakaoLocalRequest;
 import com.example.golfplatform.golfcourse.request.KakaoPositionRequest;
 import com.example.golfplatform.golfcourse.response.KakaoApiResponse;
+import com.example.golfplatform.golfcourse.response.KakaoLocalResponse;
 import com.example.golfplatform.golfcourse.response.KakaoPositionResponse;
 import com.example.golfplatform.golfcourse.utils.KakaoMapClient;
 import java.util.List;
@@ -18,8 +20,9 @@ public class GolfCourseService {
         return response.documents();
     }
 
-    public String findLocalGolfCourses(String local) {
-        return kakaoMapClient.searchGolfCoursesByLocal(local);
+    public List<KakaoPositionResponse> findLocalGolfCourses(KakaoLocalRequest request) {
+        KakaoApiResponse response = kakaoMapClient.searchGolfCoursesByLocal(request);
+        return response.documents();
     }
 
 }
