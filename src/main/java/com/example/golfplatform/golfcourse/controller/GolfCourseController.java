@@ -1,6 +1,8 @@
 package com.example.golfplatform.golfcourse.controller;
 
+import com.example.golfplatform.golfcourse.request.KakaoLocalRequest;
 import com.example.golfplatform.golfcourse.request.KakaoPositionRequest;
+import com.example.golfplatform.golfcourse.response.KakaoLocalResponse;
 import com.example.golfplatform.golfcourse.response.KakaoPositionResponse;
 import com.example.golfplatform.golfcourse.service.GolfCourseService;
 import java.util.List;
@@ -28,9 +30,11 @@ public class GolfCourseController {
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/local")
-    public String getLocalGolfCourse(@RequestParam String local) {
-        return getLocalGolfCourse(local);
+    @GetMapping("/search")
+    public ResponseEntity<List<KakaoPositionResponse>> getLocalGolfCourse(@RequestParam String local) {
+        KakaoLocalRequest request = new KakaoLocalRequest(local);
+        List<KakaoPositionResponse> responses = golfCourseService.findLocalGolfCourses(request);
+        return ResponseEntity.ok(responses);
     }
 
 }
