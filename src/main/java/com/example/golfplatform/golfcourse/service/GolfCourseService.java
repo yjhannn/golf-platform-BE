@@ -1,6 +1,10 @@
 package com.example.golfplatform.golfcourse.service;
 
+import com.example.golfplatform.golfcourse.request.KakaoPositionRequest;
+import com.example.golfplatform.golfcourse.response.KakaoApiResponse;
+import com.example.golfplatform.golfcourse.response.KakaoPositionResponse;
 import com.example.golfplatform.golfcourse.utils.KakaoMapClient;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,8 +13,9 @@ import org.springframework.stereotype.Service;
 public class GolfCourseService {
     private final KakaoMapClient kakaoMapClient;
 
-    public String findNearbyGolfCourses(double lat, double lng, int radius) {
-        return kakaoMapClient.searchGolfCourses(lat, lng, radius);
+    public List<KakaoPositionResponse> findNearbyGolfCourses(KakaoPositionRequest request) {
+        KakaoApiResponse response = kakaoMapClient.searchGolfCourses(request);
+        return response.documents();
     }
 
     public String findLocalGolfCourses(String local) {
