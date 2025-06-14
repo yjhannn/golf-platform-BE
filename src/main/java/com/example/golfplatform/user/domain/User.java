@@ -21,20 +21,17 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    private Long kakaoId;
+    private String nickname;
     private String email;
+    private String profileImageUrl;
 
-    @Column(nullable = false)
-    private String password;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
-
-    public enum Role {
-        USER, ADMIN
+    public User(Long kakaoId, String nickname, String profileImageUrl) {
+        this.kakaoId = kakaoId;
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
     }
 }
