@@ -44,4 +44,11 @@ public class Post {
     public enum Category {
         FREE, QUESTION, REVIEW
     }
+
+    // 게시물 수정 시 메서드
+    public void update(String title, String content, Category category) {
+        this.title = title;
+        this.content = content;
+        this.category = category;
+    }
 }
