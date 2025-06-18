@@ -33,6 +33,15 @@ public class OauthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
+    public TokenResponse reissueToken(Long userId, String authHeader) {
+        String refreshToken = authHeader.replace("Bearer ", "");
+        String storedToken = refreshTokenService.getRefreshToken(userId)
+            .orElseThrow(() -> new RuntimeException("리프레시 토큰이 존재하지 않습니다."));
+
+        String newAccessToken = jwtTokenProvider.createAccessToken(userId);
+        return new TokenResponse(newAccessToken, refreshToken);
+    }
+
     public String kakaoUrl() {
         return kakaoAuthClient.getKakaoLoginUrl();
     }
