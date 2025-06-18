@@ -59,5 +59,25 @@ public class JwtTokenProvider {
         }
     }
 
-    
+    // 토큰에서 유저 ID 추출
+    public Long getUserId(String token) {
+        Claims claims = parseClaims(token);
+        return Long.parseLong(claims.getSubject());
+    }
+
+    // 토큰에서 Authentication 생성
+    public Authentication getAuthentication(String token) {
+        Long userId = getUserId(token);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+        return new UsernamePasswordAuthenticationToken(user, "", Collections.emptyList());
+    }
+
+    // Claims 파싱
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token)
+            .getBody();
+    }
 }
