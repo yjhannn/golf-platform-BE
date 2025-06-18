@@ -68,9 +68,7 @@ public class JwtTokenProvider {
     // 토큰에서 Authentication 생성
     public Authentication getAuthentication(String token) {
         Long userId = getUserId(token);
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
-        return new UsernamePasswordAuthenticationToken(user, "", Collections.emptyList());
+        return new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
     }
 
     // Claims 파싱
