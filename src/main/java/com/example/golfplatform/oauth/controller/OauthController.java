@@ -1,6 +1,7 @@
 package com.example.golfplatform.oauth.controller;
 
 import com.example.golfplatform.oauth.redis.RefreshTokenService;
+import com.example.golfplatform.oauth.request.ReissueRequest;
 import com.example.golfplatform.oauth.response.TokenResponse;
 import com.example.golfplatform.oauth.service.OauthService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import org.h2.command.Token;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +31,13 @@ public class OauthController {
     public ResponseEntity<TokenResponse> kakaoCallBack(@RequestParam String code) {
         TokenResponse tokenResponse = oauthService.kakaoLogin(code);
         return ResponseEntity.ok(tokenResponse);
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenResponse> reissue(@RequestBody ReissueRequest request,
+        @RequestHeader("Authorization") String authHeader) {
+        TokenResponse response = oauthService.reissueToken(request.userId(), authHeader);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/logout")
