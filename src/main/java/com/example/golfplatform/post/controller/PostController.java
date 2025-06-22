@@ -8,6 +8,7 @@ import com.example.golfplatform.post.service.PostService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,8 +35,9 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createPost(@RequestBody PostCreateRequest request) {
-        postService.createPost(request);
+    public ResponseEntity<Void> createPost(@RequestBody PostCreateRequest request,
+        @AuthenticationPrincipal Long userId) {
+        postService.createPost(request, userId);
         return ResponseEntity.ok().build();
     }
 

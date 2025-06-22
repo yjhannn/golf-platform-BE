@@ -31,9 +31,9 @@ public class PostService {
         return PostDetailResponse.from(post);
     }
 
-    public void createPost(PostCreateRequest request) {
-        User user = userRepository.findById(1L)
-            .orElseThrow(() -> new IllegalArgumentException(("사용자가 존재하지 않습니다.")));
+    public void createPost(PostCreateRequest request, Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException(("유저를 찾을 수 없습니다.")));
         Post post = Post.builder()
             .user(user)
             .title(request.title())
