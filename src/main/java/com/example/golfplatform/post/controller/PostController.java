@@ -42,14 +42,15 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequest request) {
-        postService.updatePost(postId, request);
+    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequest request,
+        @AuthenticationPrincipal Long userId) {
+        postService.updatePost(postId, request, userId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId, @AuthenticationPrincipal Long userId) {
+        postService.deletePost(postId, userId);
         return ResponseEntity.ok().build();
     }
 }
