@@ -8,6 +8,7 @@ import com.example.golfplatform.post.service.PostService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,20 +35,22 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createPost(@RequestBody PostCreateRequest request) {
-        postService.createPost(request);
+    public ResponseEntity<Void> createPost(@RequestBody PostCreateRequest request,
+        @AuthenticationPrincipal Long userId) {
+        postService.createPost(request, userId);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequest request) {
-        postService.updatePost(postId, request);
+    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequest request,
+        @AuthenticationPrincipal Long userId) {
+        postService.updatePost(postId, request, userId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId, @AuthenticationPrincipal Long userId) {
+        postService.deletePost(postId, userId);
         return ResponseEntity.ok().build();
     }
 }
