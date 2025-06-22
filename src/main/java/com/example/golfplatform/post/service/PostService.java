@@ -1,0 +1,58 @@
+package com.example.golfplatform.post.service;
+
+import com.example.golfplatform.post.domain.Post;
+import com.example.golfplatform.post.repository.PostRepository;
+import com.example.golfplatform.post.request.PostCreateRequest;
+import com.example.golfplatform.post.request.PostUpdateRequest;
+import com.example.golfplatform.post.response.PostDetailResponse;
+import com.example.golfplatform.post.response.PostListResponse;
+import com.example.golfplatform.user.domain.User;
+import com.example.golfplatform.user.repository.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class PostService {
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+
+    public List<PostListResponse> getAllPosts() {
+        return postRepository.findAll().stream()
+            .map(PostListResponse::from)
+            .collect(Collectors.toList());
+    }
+
+    public PostDetailResponse getPostById(Long id) {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
+        return PostDetailResponse.from(post);
+    }
+
+    public void createPost(PostCreateRequest request) {
+        User user = userRepository.findById(1L)
+            .orElseThrow(() -> new IllegalArgumentException(("사용자가 존재하지 않습니다.")));
+        Post post = Post.builder()
+            .user(user)
+            .title(request.title())
+            .content(request.content())
+            .category(request.category())
+            .build();
+        postRepository.save(post);
+    }
+
+    public void updatePost(Long id, PostUpdateRequest request) {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글은 이미 존재하지 않습니다."));
+        post.update(request.title(), request.content(), request.category());
+    }
+
+    public void deletePost(Long id) {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글은 이미 존재하지 않습니다."));
+        postRepository.delete(post);
+    }
+
+}
