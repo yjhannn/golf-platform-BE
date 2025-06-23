@@ -1,5 +1,8 @@
 package com.example.golfplatform.post.service;
 
+import com.example.golfplatform.comment.domain.Comment;
+import com.example.golfplatform.comment.repository.CommentRepository;
+import com.example.golfplatform.comment.response.CommentResponse;
 import com.example.golfplatform.exception.UnauthorizedAccessException;
 import com.example.golfplatform.post.domain.Post;
 import com.example.golfplatform.post.repository.PostRepository;
@@ -20,7 +23,7 @@ import org.springframework.stereotype.Service;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
+    private final CommentRepository commentRepository;
     public List<PostListResponse> getAllPosts() {
         return postRepository.findAll().stream()
             .map(PostListResponse::from)
@@ -30,7 +33,17 @@ public class PostService {
     public PostDetailResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
-        return PostDetailResponse.from(post);
+        List<Comment> comments = commentRepository.findByPostId(id);
+        List<CommentResponse> commentResponseList = comments.stream()
+            .map(c -> new CommentResponse(
+                c.getId(),
+                c.getUser().getNickname(),
+                c.getContent(),
+                c.getCreatedAt()
+            ))
+            .toList();
+        return new PostDetailResponse(post.getId(), post.getTitle(), post.getContent(), post.getUser().getEmail(),
+            post.getCategory(), post.getCreatedAt(), commentResponseList);
     }
 
     public void createPost(PostCreateRequest request, Long userId) {

@@ -35,4 +35,8 @@ public class Comment {
     private String content;
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    public void update(String content) {
+        this.content = content;
+    }
 }
