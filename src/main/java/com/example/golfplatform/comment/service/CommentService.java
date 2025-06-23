@@ -3,6 +3,7 @@ package com.example.golfplatform.comment.service;
 import com.example.golfplatform.comment.domain.Comment;
 import com.example.golfplatform.comment.repository.CommentRepository;
 import com.example.golfplatform.comment.request.CommentRequest;
+import com.example.golfplatform.comment.request.CommentUpdateRequest;
 import com.example.golfplatform.exception.UnauthorizedAccessException;
 import com.example.golfplatform.post.domain.Post;
 import com.example.golfplatform.post.repository.PostRepository;
@@ -28,6 +29,15 @@ public class CommentService {
             .content(request.content())
             .build();
         commentRepository.save(comment);
+    }
+
+    public void updateComment(Long commentId, Long userId, CommentUpdateRequest request) {
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
+        if(!comment.getUser().getId().equals(userId)) {
+            throw new UnauthorizedAccessException("수정 권한이 없습니다.");
+        }
+        comment.update(request.content());
     }
 
     public void deleteComment(Long userId, Long commentId) {
