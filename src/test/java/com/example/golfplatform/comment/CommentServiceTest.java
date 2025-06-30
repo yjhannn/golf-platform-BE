@@ -84,7 +84,7 @@ public class CommentServiceTest {
             .post(post)
             .build());
 
-        commentService.deleteComment(comment.getId(), user.getId());
+        commentService.deleteComment(user.getId(), comment.getId());
 
         Optional<Comment> deleted = commentRepository.findById(comment.getId());
         assertThat(deleted).isEmpty();
