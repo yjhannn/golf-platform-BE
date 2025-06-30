@@ -104,4 +104,31 @@ class PostServiceTest {
         assertThat(postRepository.findById(postId)).isEmpty();
     }
     
+    @Test
+    @DisplayName("게시물 수정 권한 없을 때 예외 발생")
+    void getExceptionByUnauthorizedAccessToUpdatePost() {
+        User otherUser = userRepository.save(
+            User.builder().email("other@example.com").nickname("other").build()
+        );
+        Post post = Post.builder()
+            .title("title")
+            .content("content")
+            .category(Post.Category.FREE)
+            .user(otherUser)
+            .build();
+        Long postId = postRepository.save(post).getId();
+
+        PostUpdateRequest update = new PostUpdateRequest("updated", "updatedContent", Post.Category.REVIEW);
+
+        assertThatThrownBy(() -> postService.updatePost(postId, update, savedUserId))
+            .isInstanceOf(com.example.golfplatform.exception.UnauthorizedAccessException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시물 조회 예외 발생")
+    void getExceptionByWrongPostId() {
+        assertThatThrownBy(() -> postService.getPostById(9999L))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("해당 게시글은 존재하지 않습니다.");
+    }
 }
