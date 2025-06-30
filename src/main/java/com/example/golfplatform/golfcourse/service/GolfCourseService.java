@@ -20,6 +20,10 @@ public class GolfCourseService {
     }
 
     public List<KakaoPositionResponse> findLocalGolfCourses(KakaoLocalRequest request) {
+        String local = request.Local();
+        if (local == null || local.trim().isEmpty()) {
+            throw new IllegalArgumentException("지역명은 필수 입력 항목입니다.");
+        }
         KakaoApiResponse response = kakaoMapClient.searchGolfCoursesByLocal(request);
         return response.documents();
     }
