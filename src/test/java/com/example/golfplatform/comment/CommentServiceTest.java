@@ -105,7 +105,7 @@ public class CommentServiceTest {
             .build());
 
         assertThrows(RuntimeException.class, () ->
-            commentService.updateComment(comment.getId(), new CommentUpdateRequest("수정 시도"), another.getId()));
+            commentService.updateComment(another.getId(), comment.getId(), new CommentUpdateRequest("수정 시도")));
     }
 
     @Test
