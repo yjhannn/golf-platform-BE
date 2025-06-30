@@ -90,5 +90,39 @@ public class CommentServiceTest {
         assertThat(deleted).isEmpty();
     }
 
-    
+    @Test
+    @DisplayName("댓글 수정 실패 - 작성자 아님")
+    void updateComment_fail() {
+        User another = userRepository.save(User.builder()
+            .email("another@naver.com")
+            .nickname("다른사람")
+            .build());
+
+        Comment comment = commentRepository.save(Comment.builder()
+            .content("원래 댓글")
+            .user(user)
+            .post(post)
+            .build());
+
+        assertThrows(RuntimeException.class, () ->
+            commentService.updateComment(comment.getId(), new CommentUpdateRequest("수정 시도"), another.getId()));
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 실패 - 작성자 아님")
+    void deleteComment_fail() {
+        User another = userRepository.save(User.builder()
+            .email("another@naver.com")
+            .nickname("다른사람")
+            .build());
+
+        Comment comment = commentRepository.save(Comment.builder()
+            .content("삭제 시도 댓글")
+            .user(user)
+            .post(post)
+            .build());
+
+        assertThrows(RuntimeException.class, () ->
+            commentService.deleteComment(comment.getId(), another.getId()));
+    }
 }
