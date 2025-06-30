@@ -1,6 +1,7 @@
 package com.example.golfplatform.post;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -132,4 +133,40 @@ public class PostServiceTest {
         assertThat(postRepository.findAll()).hasSize(0);
     }
 
+    @Test
+    @DisplayName("존재하지 않는 게시물 조회 시 예외 발생")
+    void getExceptionByNonExistentPost() {
+        // given
+        when(postRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // expect
+        assertThatThrownBy(() -> postService.getPostById(999L))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("해당 게시글은 존재하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시물 수정 시 예외 발생")
+    void updateNonExistentPost() {
+        // given
+        when(postRepository.findById(999L)).thenReturn(Optional.empty());
+        PostUpdateRequest request = new PostUpdateRequest("제목", "내용", Category.QUESTION);
+
+        // expect
+        assertThatThrownBy(() -> postService.updatePost(999L, request))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("해당 게시글은 이미 존재하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시물 삭제 시 예외 발생")
+    void deleteNonExistentPost() {
+        // given
+        when(postRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // expect
+        assertThatThrownBy(() -> postService.deletePost(999L))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("해당 게시글은 이미 존재하지 않습니다.");
+    }
 }
