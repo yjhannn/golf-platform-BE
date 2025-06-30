@@ -103,7 +103,7 @@ class PostServiceTest {
 
         assertThat(postRepository.findById(postId)).isEmpty();
     }
-    
+
     @Test
     @DisplayName("게시물 수정 권한 없을 때 예외 발생")
     void getExceptionByUnauthorizedAccessToUpdatePost() {
