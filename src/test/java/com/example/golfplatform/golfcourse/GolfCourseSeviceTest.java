@@ -1,6 +1,7 @@
 package com.example.golfplatform.golfcourse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.example.golfplatform.golfcourse.request.KakaoLocalRequest;
@@ -64,5 +65,15 @@ public class GolfCourseSeviceTest {
         // then
         assertThat(result).hasSize(1);
         assertThat(result.get(0).place_name()).isEqualTo("성남 골프장");
+    }
+
+    @Test
+    @DisplayName("특정 지역 검색 시 null 요청이 왔을 경우 에러 반환 테스트")
+    void inputErrorTestOnLocalFunction() {
+        KakaoLocalRequest request = new KakaoLocalRequest(null);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            golfCourseService.findLocalGolfCourses(request);
+        });
     }
 }
