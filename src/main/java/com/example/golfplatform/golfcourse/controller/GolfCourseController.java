@@ -2,7 +2,6 @@ package com.example.golfplatform.golfcourse.controller;
 
 import com.example.golfplatform.golfcourse.request.KakaoLocalRequest;
 import com.example.golfplatform.golfcourse.request.KakaoPositionRequest;
-import com.example.golfplatform.golfcourse.response.KakaoLocalResponse;
 import com.example.golfplatform.golfcourse.response.KakaoPositionResponse;
 import com.example.golfplatform.golfcourse.service.GolfCourseService;
 import java.util.List;

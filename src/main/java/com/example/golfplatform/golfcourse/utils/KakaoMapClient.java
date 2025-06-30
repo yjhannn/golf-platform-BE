@@ -3,7 +3,6 @@ package com.example.golfplatform.golfcourse.utils;
 import com.example.golfplatform.golfcourse.request.KakaoLocalRequest;
 import com.example.golfplatform.golfcourse.request.KakaoPositionRequest;
 import com.example.golfplatform.golfcourse.response.KakaoApiResponse;
-import com.example.golfplatform.golfcourse.response.KakaoPositionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
