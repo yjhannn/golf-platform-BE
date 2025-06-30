@@ -3,6 +3,7 @@ package com.example.golfplatform.golfcourse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import com.example.golfplatform.golfcourse.request.KakaoLocalRequest;
 import com.example.golfplatform.golfcourse.request.KakaoPositionRequest;
 import com.example.golfplatform.golfcourse.response.KakaoApiResponse;
 import com.example.golfplatform.golfcourse.response.KakaoPositionResponse;
@@ -47,5 +48,21 @@ public class GolfCourseSeviceTest {
         assertThat(result.get(0).place_name()).isEqualTo("중앙 골프장");
     }
 
-    
+    @Test
+    @DisplayName("특정 지역에 대한 골프장 리스트 반환 성공 테스트")
+    void golfCourseListByLocal() {
+        // given
+        KakaoLocalRequest request = new KakaoLocalRequest("경기도");
+        KakaoPositionResponse response1 = new KakaoPositionResponse("경기 성남시", "골프장", "", "031-123-4567", "성남 골프장", "http://place.map.kakao.com/456", "경기 성남시 도로명", "127.0", "37.4");
+        KakaoApiResponse mockResponse = new KakaoApiResponse(List.of(response1));
+
+        when(kakaoMapClient.searchGolfCoursesByLocal(request)).thenReturn(mockResponse);
+
+        // when
+        List<KakaoPositionResponse> result = golfCourseService.findLocalGolfCourses(request);
+
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).place_name()).isEqualTo("성남 골프장");
+    }
 }
