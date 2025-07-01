@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,18 +21,36 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
+@Setter
 public class User {
     @Id @GeneratedValue
     private Long id;
 
     private Long kakaoId;
     private String nickname;
+    private String phoneNumber;
     private String email;
     private String profileImageUrl;
+    @Enumerated(EnumType.STRING)
+    private PreferredRegion preferredRegion;
+    @Enumerated(EnumType.STRING)
+    private AverageScore averageScore;
+
+    private boolean isFirstLogin = true;
 
     public User(Long kakaoId, String nickname, String profileImageUrl) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
+    }
+
+    // getter
+    public boolean isFirstLogin() {
+        return isFirstLogin;
+    }
+
+    // setter
+    public void completeFirstLogin() {
+        this.isFirstLogin = false;
     }
 }
