@@ -24,13 +24,14 @@ public class OauthService {
         KakaoUserResponse kakaoUser = kakaoAuthClient.getUserInfo(kakaoToken.accessToken());
 
         User user = userService.findOrCreateUser(kakaoUser);
+        boolean isFirstLogin = user.isFirstLogin();
 
         String accessToken = jwtTokenProvider.createAccessToken(user.getId());
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
         refreshTokenService.saveRefreshToken(user.getId(), refreshToken);
 
-        return new TokenResponse(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken, isFirstLogin);
     }
 
     public TokenResponse reissueToken(Long userId, String authHeader) {
@@ -39,7 +40,7 @@ public class OauthService {
             .orElseThrow(() -> new RuntimeException("리프레시 토큰이 존재하지 않습니다."));
 
         String newAccessToken = jwtTokenProvider.createAccessToken(userId);
-        return new TokenResponse(newAccessToken, refreshToken);
+        return new TokenResponse(newAccessToken, refreshToken, false);
     }
 
     public String kakaoUrl() {
