@@ -1,6 +1,7 @@
 package com.example.golfplatform.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.golfplatform.user.domain.AverageScore;
 import com.example.golfplatform.user.domain.PreferredRegion;
@@ -46,4 +47,46 @@ public class UserServiceTest {
         assertThat(updatedUser.isFirstLogin()).isFalse();
     }
 
+    @Test
+    @DisplayName("추가 정보 입력 실패 - 존재하지 않는 사용자")
+    void completeFirstLogin_fail_invalidUser() {
+        // given
+        Long invalidUserId = 9999L;
+        AdditionalInfoRequest request = new AdditionalInfoRequest(
+            "01012345678",
+            "test@example.com",
+            PreferredRegion.GYEONGGI,
+            AverageScore.BETWEEN_81_90
+        );
+
+        // when & then
+        assertThatThrownBy(() -> userService.updateProfile(invalidUserId, request))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("유저 없음");
+    }
+
+    @Test
+    @DisplayName("추가 정보 입력 실패 - 이미 입력된 사용자")
+    void completeFirstLogin_fail_alreadyCompleted() {
+        // given
+        User user = User.builder()
+            .kakaoId(123456L)
+            .email("test@example.com")
+            .nickname("testuser")
+            .isFirstLogin(false)
+            .build();
+        userRepository.save(user);
+
+        AdditionalInfoRequest request = new AdditionalInfoRequest(
+            "01012345678",
+            "test@example.com",
+            PreferredRegion.GYEONGGI,
+            AverageScore.BETWEEN_81_90
+        );
+
+        // when & then
+        assertThatThrownBy(() -> userService.updateProfile(user.getId(), request))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("이미 사용자 정보를 입력했습니다.");
+    }
 }
