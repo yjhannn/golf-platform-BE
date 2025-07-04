@@ -18,7 +18,7 @@ public class UserController {
     @PostMapping("/profile")
     public ResponseEntity<Void> updateAdditionUserInfo(@AuthenticationPrincipal Long userId,
         @RequestBody AdditionalInfoRequest request) {
-        userService.updateProfile(userId, request);
+        userService.addProfile(userId, request);
         return ResponseEntity.ok().build();
     }
 

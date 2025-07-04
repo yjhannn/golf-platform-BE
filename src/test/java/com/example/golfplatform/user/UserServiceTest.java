@@ -37,7 +37,7 @@ public class UserServiceTest {
             "test@example.com", PreferredRegion.GYEONGSANG, AverageScore.BETWEEN_81_90);
 
         // when
-        userService.updateProfile(user.getId(), request);
+        userService.addProfile(user.getId(), request);
 
         // then
         User updatedUser = userRepository.findById(user.getId()).orElseThrow();
@@ -60,7 +60,7 @@ public class UserServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> userService.updateProfile(invalidUserId, request))
+        assertThatThrownBy(() -> userService.addProfile(invalidUserId, request))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("유저 없음");
     }
@@ -85,7 +85,7 @@ public class UserServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> userService.updateProfile(user.getId(), request))
+        assertThatThrownBy(() -> userService.addProfile(user.getId(), request))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("이미 사용자 정보를 입력했습니다.");
     }
