@@ -38,5 +38,14 @@ public class UserService {
         userRepository.save(user);
     }
 
-
+    // 마이페이지 기능 - 나의 정보 조회
+    public MyInfoResponse getMyInfo(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("유저 없음"));
+        MyInfoResponse response = new MyInfoResponse(
+            user.getNickname(), user.getEmail(), user.getPhoneNumber(),
+            user.getPreferredRegion().getDescription(), user.getAverageScore().getDescription()
+        );
+        return response;
+    }
 }
