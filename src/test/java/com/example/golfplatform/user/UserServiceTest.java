@@ -8,6 +8,7 @@ import com.example.golfplatform.user.domain.PreferredRegion;
 import com.example.golfplatform.user.domain.User;
 import com.example.golfplatform.user.repository.UserRepository;
 import com.example.golfplatform.user.request.AdditionalInfoRequest;
+import com.example.golfplatform.user.request.UpdateMyInfoRequest;
 import com.example.golfplatform.user.response.MyInfoResponse;
 import com.example.golfplatform.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -126,6 +127,60 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    @DisplayName("마이페이지 - 사용자 정보 수정 성공")
+    void updateMyInfo_success() {
+        // given
+        User user = User.builder()
+            .kakaoId(456L)
+            .nickname("초기유저")
+            .email("init@email.com")
+            .phoneNumber("01000000000")
+            .preferredRegion(PreferredRegion.JEJU)
+            .averageScore(AverageScore.UNDER_72)
+            .isFirstLogin(false)
+            .build();
+        userRepository.save(user);
 
+        UpdateMyInfoRequest request = new UpdateMyInfoRequest(
+            "01099998888",
+            "강원도",
+            "72~80타"
+        );
 
+        // when
+        userService.updateMyInfo(user.getId(), request);
+
+        // then
+        User updatedUser = userRepository.findById(user.getId()).orElseThrow();
+        assertThat(updatedUser.getPhoneNumber()).isEqualTo("01099998888");
+        assertThat(updatedUser.getPreferredRegion()).isEqualTo(PreferredRegion.GANGWON);
+        assertThat(updatedUser.getAverageScore()).isEqualTo(AverageScore.BETWEEN_72_80);
+    }
+
+    @Test
+    @DisplayName("마이페이지 - 잘못된 선호 지역 입력 시 예외 발생")
+    void updateMyInfo_fail_invalidPreferredRegion() {
+        // given
+        User user = userRepository.save(User.builder()
+            .kakaoId(111L)
+            .nickname("invalidRegionUser")
+            .email("test@naver.com")
+            .phoneNumber("01012345678")
+            .preferredRegion(PreferredRegion.GYEONGGI)
+            .averageScore(AverageScore.OVER_100)
+            .isFirstLogin(false)
+            .build());
+
+        UpdateMyInfoRequest request = new UpdateMyInfoRequest(
+            "01011112222",
+            "무효지역",  // 존재하지 않는 지역
+            "81~90타"
+        );
+
+        // when & then
+        assertThatThrownBy(() -> userService.updateMyInfo(user.getId(), request))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("잘못된 지역입니다: 무효지역");
+    }
 }
