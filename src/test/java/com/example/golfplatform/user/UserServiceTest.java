@@ -8,6 +8,7 @@ import com.example.golfplatform.user.domain.PreferredRegion;
 import com.example.golfplatform.user.domain.User;
 import com.example.golfplatform.user.repository.UserRepository;
 import com.example.golfplatform.user.request.AdditionalInfoRequest;
+import com.example.golfplatform.user.response.MyInfoResponse;
 import com.example.golfplatform.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -89,4 +90,42 @@ public class UserServiceTest {
             .isInstanceOf(RuntimeException.class)
             .hasMessage("이미 사용자 정보를 입력했습니다.");
     }
+
+    @Test
+    @DisplayName("마이페이지 - 사용자 정보 조회 성공")
+    void getUserProfile() {
+        User user = User.builder()
+            .kakaoId(123L)
+            .nickname("테스트유저")
+            .email("test@email.com")
+            .phoneNumber("01012345678")
+            .preferredRegion(PreferredRegion.JEJU)
+            .averageScore(AverageScore.OVER_100)
+            .isFirstLogin(false)
+            .build();
+        userRepository.save(user);
+
+        // when
+        MyInfoResponse response = userService.getMyInfo(user.getId());
+
+        // then
+        assertThat(response.nickname()).isEqualTo("테스트유저");
+        assertThat(response.email()).isEqualTo("test@email.com");
+        assertThat(response.phoneNumber()).isEqualTo("01012345678");
+        assertThat(response.preferredRegion()).isEqualTo("제주도");
+        assertThat(response.averageScore()).isEqualTo("100타 이상");
+    }
+
+    @Test
+    @DisplayName("마이페이지 - 존재하지 않는 유저 정보 조회 시 예외 발생")
+    void getUserProfile_Fail() {
+        // when & then
+        assertThatThrownBy(() -> userService.getMyInfo(9999L))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("유저 없음");
+
+    }
+
+
+
 }
