@@ -4,6 +4,7 @@ import com.example.golfplatform.oauth.response.KakaoUserResponse;
 import com.example.golfplatform.user.domain.User;
 import com.example.golfplatform.user.repository.UserRepository;
 import com.example.golfplatform.user.request.AdditionalInfoRequest;
+import com.example.golfplatform.user.request.UpdateMyInfoRequest;
 import com.example.golfplatform.user.response.MyInfoResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,14 @@ public class UserService {
             user.getPreferredRegion().getDescription(), user.getAverageScore().getDescription()
         );
         return response;
+    }
+
+    // 나의 정보 수정
+    @Transactional
+    public void updateMyInfo(Long userId, UpdateMyInfoRequest request) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("유저 없음"));
+        user.updateAdditionalInfo(request.phoneNumber(), request.toPreferredRegion(),
+            request.toAverageScore());
     }
 }

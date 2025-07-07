@@ -53,4 +53,11 @@ public class User {
     public void completeFirstLogin() {
         this.isFirstLogin = false;
     }
+
+    public void updateAdditionalInfo(String phoneNumber, PreferredRegion region, AverageScore score) {
+        this.phoneNumber = phoneNumber;
+        this.preferredRegion = region;
+        this.averageScore = score;
+        this.isFirstLogin = false;
+    }
 }
