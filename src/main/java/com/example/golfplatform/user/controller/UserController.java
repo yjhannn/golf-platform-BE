@@ -1,4 +1,4 @@
-package com.example.golfplatform.user;
+package com.example.golfplatform.user.controller;
 
 import com.example.golfplatform.user.request.AdditionalInfoRequest;
 import com.example.golfplatform.user.request.UpdateMyInfoRequest;
