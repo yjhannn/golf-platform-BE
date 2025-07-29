@@ -38,8 +38,12 @@ public class Review {
     @Column(nullable = false)
     private int rating;
 
+    private String title;
+
     @Lob
     private String content;
+
+    private LocalDateTime visitedAt;
 
     private String imageUrl;
 
