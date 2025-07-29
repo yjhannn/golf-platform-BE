@@ -48,4 +48,12 @@ public class Review {
     private String imageUrl;
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    public void update(int rating, String title, GolfCourse golfCourse, String content, LocalDateTime visited) {
+        this.rating = rating;
+        this.title = title;
+        this.golfCourse = golfCourse;
+        this.content = content;
+        this.visitedAt = visited;
+    }
 }
