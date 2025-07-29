@@ -6,18 +6,16 @@ import com.example.golfplatform.review.domain.Review;
 import com.example.golfplatform.review.repository.ReviewRepository;
 import com.example.golfplatform.review.request.ReviewCreateRequest;
 import com.example.golfplatform.review.request.ReviewUpdateRequest;
-import com.example.golfplatform.review.requestuest.ReviewCreaterequestuest;
-import com.example.golfplatform.review.requestuest.ReviewUpdaterequestuest;
 import com.example.golfplatform.review.response.ReviewResponse;
 import com.example.golfplatform.user.domain.User;
 import com.example.golfplatform.user.repository.UserRepository;
 import java.util.List;
-import lombok.requestuiredArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@requestuiredArgsConstructor
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReviewService {
     private final ReviewRepository reviewRepository;
@@ -54,6 +52,7 @@ public class ReviewService {
         return ReviewResponse.of(saved);
     }
 
+    // 리뷰 수정
     @Transactional
     public ReviewResponse updateReview(Long userId, Long id, ReviewUpdateRequest request) {
         Review review = reviewRepository.findById(id)
@@ -69,5 +68,16 @@ public class ReviewService {
             request.visitedAt()
         );
         return ReviewResponse.of(review);
+    }
+
+    // 리뷰 삭제
+    @Transactional
+    public void deleteReview(Long userId, Long id) {
+        Review review = reviewRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Review not found: " + id));
+        if (!review.getUser().getId().equals(userId)) {
+            throw new SecurityException("삭제 권한이 없습니다.");
+        }
+        reviewRepository.delete(review);
     }
 }
