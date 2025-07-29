@@ -1,6 +1,7 @@
 package com.example.golfplatform.review.controller;
 
 import com.example.golfplatform.review.request.ReviewCreateRequest;
+import com.example.golfplatform.review.request.ReviewUpdateRequest;
 import com.example.golfplatform.review.response.ReviewResponse;
 import com.example.golfplatform.review.service.ReviewService;
 import java.util.List;
@@ -9,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,5 +34,15 @@ public class ReviewController {
     public ResponseEntity<ReviewResponse> createReview(@AuthenticationPrincipal Long userId,
         @RequestBody ReviewCreateRequest request) {
         return ResponseEntity.ok(reviewService.createReview(userId, request));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ReviewResponse> updateReview(
+        @AuthenticationPrincipal Long userId,
+        @PathVariable Long id,
+        @RequestBody ReviewUpdateRequest request
+    ) {
+        return ResponseEntity.ok(reviewService.updateReview(userId, id, request));
     }
 }
