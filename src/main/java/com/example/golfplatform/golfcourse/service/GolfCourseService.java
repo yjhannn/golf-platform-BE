@@ -75,7 +75,7 @@ public class GolfCourseService implements ApplicationRunner {
         log.info("▶ Bulk import of all golf courses completed");
     }
 
-    /** 현재 위치 기준 검색 → 읽기 전용 트랜잭션 */
+    /** 현재 위치 기준 검색 */
     @Transactional
     public List<KakaoPositionResponse> searchByPosition(KakaoPositionRequest req) {
         KakaoApiResponse rsp = kakaoMapClient.searchGolfCoursesByPosition(
@@ -119,19 +119,34 @@ public class GolfCourseService implements ApplicationRunner {
     }
 
 
-    /** 지역 키워드 기준 검색 → 읽기 전용 트랜잭션 */
-    @Transactional(readOnly = true)
+    /**
+     * 특정 지역 키워드 기준 골프장 검색 → DB 동기화(없으면 저장) → 평균 평점 포함 DTO 반환
+     */
+    @Transactional
     public List<KakaoPositionResponse> searchByLocal(KakaoLocalRequest req) {
         KakaoApiResponse rsp = kakaoMapClient.searchGolfCoursesByLocal(
             req.Local(), 1, 15
         );
+
         return rsp.documents().stream()
             .filter(doc -> doc.category_name().contains("> 골프장"))
             .map(doc -> {
+                // 기존 DB에 없으면 새로 저장, 있으면 조회
                 GolfCourse course = golfCourseRepository
                     .findByNameAndAddress(doc.place_name(), doc.address_name())
-                    .orElseThrow(() -> new IllegalStateException("미등록 골프장: " + doc.place_name()));
+                    .orElseGet(() -> golfCourseRepository.save(
+                        GolfCourse.builder()
+                            .name(doc.place_name())
+                            .address(doc.address_name())
+                            .lat(Double.parseDouble(doc.y()))
+                            .lng(Double.parseDouble(doc.x()))
+                            .phone(doc.phone())
+                            .region(extractRegion(doc.category_name()))
+                            .build()
+                    ));
+
                 double avg = reviewRepository.findAverageRatingByCourseId(course.getId());
+
                 return new KakaoPositionResponse(
                     doc.address_name(),
                     doc.category_name(),
