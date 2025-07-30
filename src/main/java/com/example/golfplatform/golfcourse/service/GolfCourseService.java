@@ -75,6 +75,7 @@ public class GolfCourseService implements ApplicationRunner {
         log.info("▶ Bulk import of all golf courses completed");
     }
 
+
     /** 현재 위치 기준 검색 */
     @Transactional
     public List<KakaoPositionResponse> searchByPosition(KakaoPositionRequest req) {
@@ -116,7 +117,7 @@ public class GolfCourseService implements ApplicationRunner {
                 );
             })
             .toList();
-    }
+
 
 
     /**
