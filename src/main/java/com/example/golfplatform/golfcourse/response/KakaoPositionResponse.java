@@ -9,7 +9,8 @@ public record KakaoPositionResponse(
     String place_url,
     String road_address_name,
     String x,
-    String y
+    String y,
+    double avg
 ) {
 
 }
