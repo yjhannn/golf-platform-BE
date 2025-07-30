@@ -25,14 +25,14 @@ public class GolfCourseController {
         @RequestParam double lng,
         @RequestParam int radius) {
         KakaoPositionRequest request = new KakaoPositionRequest(lat, lng, radius);
-        List<KakaoPositionResponse> responses = golfCourseService.findNearbyGolfCourses(request);
+        List<KakaoPositionResponse> responses = golfCourseService.searchByPosition(request);
         return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<KakaoPositionResponse>> getLocalGolfCourse(@RequestParam String local) {
         KakaoLocalRequest request = new KakaoLocalRequest(local);
-        List<KakaoPositionResponse> responses = golfCourseService.findLocalGolfCourses(request);
+        List<KakaoPositionResponse> responses = golfCourseService.searchByLocal(request);
         return ResponseEntity.ok(responses);
     }
 
